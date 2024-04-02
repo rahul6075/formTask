@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,9 +13,13 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "./components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+
 import "./style.css";
 
 function App() {
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
@@ -25,19 +30,51 @@ function App() {
     defaultValues: initialFormValues,
   });
 
-  const onSubmit: SubmitHandler<ValidationSchemaType> = (data) => {
-    console.log(data); // You can replace this with your form submission logic
-    localStorage.setItem("formData", JSON.stringify(data)); // Save form data to local storage
+  const onSubmit: SubmitHandler<ValidationSchemaType> = async (data) => {
+    try {
+      // Upload file
+      const uploadedFile = await uploadFile(data.resume[0]);
+      console.log("File uploaded:", uploadedFile);
+
+      // Save form data with file path to local storage
+      const formDataWithFilePath = { ...data, resume: uploadedFile };
+      localStorage.setItem("formData", JSON.stringify(formDataWithFilePath));
+
+      // Show success message
+      toast({
+        title: "Success!",
+        description: `Form submitted successfully`,
+      });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast({
+        title: "Error!",
+        description: `Failed to submit form`,
+      });
+    }
+  };
+
+  const uploadFile = async (file:any) => {
+    // Simulate file upload process, replace with actual file upload logic
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(`/assets/${file.name}`); // Assuming file is uploaded to /uploads folder
+      }, 2000);
+    });
   };
 
   const handleReset = () => {
     reset(initialFormValues);
-    // localStorage.removeItem("formData");
+    localStorage.removeItem("formData");
   };
 
   const handleFetch = () => {
     const formData = localStorage.getItem("formData") ?? "";
     reset(JSON.parse(formData));
+    toast({
+      title: "Success!",
+      description: `Form data fetched successfully`,
+    });
   };
 
   return (
@@ -112,11 +149,12 @@ function App() {
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
-          <Button type="button" onClick={handleFetch}>
+          {/* <Button type="button" onClick={handleFetch}>
             Fetch
-          </Button>
+          </Button> */}
         </CardFooter>
       </Card>
+      <Toaster />
     </div>
   );
 }
