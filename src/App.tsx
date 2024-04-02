@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -56,7 +55,7 @@ function App() {
 
   const uploadFile = async (file:any) => {
     // Simulate file upload process, replace with actual file upload logic
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve,_) => {
       setTimeout(() => {
         resolve(`/assets/${file.name}`); // Assuming file is uploaded to /uploads folder
       }, 2000);
@@ -68,14 +67,14 @@ function App() {
     localStorage.removeItem("formData");
   };
 
-  const handleFetch = () => {
-    const formData = localStorage.getItem("formData") ?? "";
-    reset(JSON.parse(formData));
-    toast({
-      title: "Success!",
-      description: `Form data fetched successfully`,
-    });
-  };
+  // const handleFetch = () => {
+  //   const formData = localStorage.getItem("formData") ?? "";
+  //   reset(JSON.parse(formData));
+  //   toast({
+  //     title: "Success!",
+  //     description: `Form data fetched successfully`,
+  //   });
+  // };
 
   return (
     <div className="flex justify-center items-center h-screen px-10">
