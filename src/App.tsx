@@ -9,7 +9,7 @@ import {
 import { Label } from "./components/ui/label";
 import { Input } from "./components/ui/input";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "./components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
@@ -25,20 +25,20 @@ function App() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ValidationSchemaType>({
-    resolver: zodResolver(validationSchema),
     defaultValues: initialFormValues,
   });
 
   const onSubmit: SubmitHandler<ValidationSchemaType> = async (data) => {
     try {
       // Upload file
+      console.log("vshgdcvshdcvisdc scd jsdnc ", data);
       const uploadedFile = await uploadFile(data.resume[0]);
       console.log("File uploaded:", uploadedFile);
 
       // Save form data with file path to local storage
       const formDataWithFilePath = { ...data, resume: uploadedFile };
       localStorage.setItem("formData", JSON.stringify(formDataWithFilePath));
-
+      console.log(formDataWithFilePath);
       // Show success message
       toast({
         title: "Success!",
@@ -53,11 +53,12 @@ function App() {
     }
   };
 
-  const uploadFile = async (file:any) => {
-    // Simulate file upload process, replace with actual file upload logic
-    return new Promise((resolve,_) => {
+  const uploadFile = async (file: any) => {
+    // Simulate file upload process
+    console.log(file);
+    return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(`/assets/${file.name}`); // Assuming file is uploaded to /uploads folder
+        resolve(`/assets/${file?.name}`); // Assuming file is uploaded to /uploads folder
       }, 2000);
     });
   };
@@ -66,15 +67,6 @@ function App() {
     reset(initialFormValues);
     localStorage.removeItem("formData");
   };
-
-  // const handleFetch = () => {
-  //   const formData = localStorage.getItem("formData") ?? "";
-  //   reset(JSON.parse(formData));
-  //   toast({
-  //     title: "Success!",
-  //     description: `Form data fetched successfully`,
-  //   });
-  // };
 
   return (
     <div className="flex justify-center items-center h-screen px-10">
@@ -143,14 +135,12 @@ function App() {
           </Button>
           <Button
             type="button"
+            id="submitButton"
             onClick={handleSubmit(onSubmit)}
             disabled={isSubmitting}
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
-          {/* <Button type="button" onClick={handleFetch}>
-            Fetch
-          </Button> */}
         </CardFooter>
       </Card>
       <Toaster />
