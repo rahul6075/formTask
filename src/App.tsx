@@ -119,6 +119,9 @@ function App() {
                     accept=".pdf,.doc,.docx"
                     {...register("resume")}
                   />
+                  <Button  id="downloadButton">
+                    Download
+                  </Button>
                   {errors.resume && (
                     <span className="text-red-500">
                       {"Image file validation error!"}
